@@ -1,3 +1,3 @@
-# to-js
+# PyBoa
 
-change python dict and list to act more as javascript objects
+change python dict and list recursively, making Data Structures where keys can be accessed by attribut

@@ -9,24 +9,18 @@ class Dict(dict):
         super().__init__(d)
 
     def __getattribute__(self, name):
-        """get, if exist, ``dict`` data then ``dict`` attribut then ``None`` by ``__getattr__``"""
+        """get, if exist, ``dict`` data then ``dict`` attribut"""
         if name in dict.keys(self):
             return dict.get(self, name)
-        return object.__getattribute__(self, name)
-
-    def __getattr__(self, name):
-        return None
+        return super(Dict, self).__getattribute__(name)
 
     def __setattr__(self, name, value):
-        js = to_boa(value)
-        dict.update(self, {name: js})
-
-    def __getitem__(self, key):
-        return dict.get(self, key)
+        boa = to_boa(value)
+        dict.update(self, {name: boa})
 
     def __setitem__(self, key, value):
-        js = to_boa(value)
-        dict.update(self, {key: js})
+        boa = to_boa(value)
+        dict.update(self, {key: boa})
 
     def toPython(self):
         return to_py(self)
