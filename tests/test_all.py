@@ -1,10 +1,12 @@
 import pytest
-from to_js import to_js
+import json as json_lib
+import yaml as yaml_lib
+from boa import boa, yaml, json
 
 
-def test_dict_to_js():
+def test_js_dict():
     d = {'yo': {'da': 4}, 'li': [{'in_li': 4}, 'str'], 'tuple': ({'tu': 4}, 5)}
-    js = to_js(d)
+    js = boa(d)
     li_1 = [js.yo, js.yo.da, js.li[0].in_li, js.li[1], js.tuple[0].tu, js.tuple[1]]
     li_2 = [js['yo'], js.yo['da'], js['li'][0].in_li, js.li[1], js.tuple[0]['tu'], js.tuple[1]]
     for i in range(len(li_1)):
@@ -28,23 +30,35 @@ def test_dict_to_js():
 
     js['a -> $@" toto'] = 2
     assert js['a -> $@" toto'] == 2
-    js = to_js({'a -> $@" toto': 4, 'a': to_js})
+    js = boa({'a -> $@" toto': 4, 'a': boa})
     assert js['a -> $@" toto'] == 4
-    assert js.a == to_js
+    assert js.a == boa
     js[' -> &'] = {'a': [{'b': 6}]}
     assert js[' -> &'].a[0].b == 6
 
-    js = to_js({'get': 2})
+    js = boa({'get': 2})
     assert js.keys is not None
     js.keys = 2
     assert js.keys == 2
     js.keys += 4
     assert js['keys'] == 6
 
+    js.a = 2
+    d = js.toPython()
+    with pytest.raises(AttributeError):
+        d.a += 1
+
+    assert js.__class__.__name__ == 'Dict'
+    assert isinstance(js, dict)
+
+    js = boa({})
+    with pytest.raises(TypeError):
+        js['a']['b'] = 2
+
 
 def test_js_list():
     li = [1, 2, 3]
-    js_list = to_js(li)
+    js_list = boa(li)
     assert li == [1, 2, 3]
     assert js_list.map(lambda x: x+1) == [2, 3, 4]
     assert js_list == li
@@ -69,11 +83,10 @@ def test_js_list():
     assert hasattr(li, 'map') is False
     assert hasattr(li_2, 'map') is False
     assert hasattr(js_list, 'map') is True
-    l1 = to_js([{'a': 2}]).toPython()
+    l1 = boa([{'a': 2}]).toPython()
     assert hasattr(l1, 'map') is False
     with pytest.raises(AttributeError):
         l1[0].a += 1
-
 
     assert js_list.filter(lambda x: x >= 2) == [2, 3]
 
@@ -89,3 +102,23 @@ def test_js_list():
 
     copy.append({'a': 2})
     assert copy[-1].a == 2
+
+    assert copy.__class__.__name__ == 'List'
+    assert isinstance(copy, list)
+
+
+def test_json_and_yaml():
+    assert json is not None  # import json success
+    js = json.loads("""{"a": 4}""")
+    assert js.a == 4
+    js = json.load("""{"b": 6}""")
+    assert js.b == 6
+    assert js.__class__.__name__ == 'Dict'
+    assert 'stream' in json.load.__doc__
+    assert 'stream' in json.loads.__doc__
+    assert "YAML document" in yaml.load.__doc__
+
+    with open('tests/test_data.json') as fd:
+        js = json.load(fd)
+        assert js.a['b'][0].c == "value"
+        assert js.a.b[1] == 4

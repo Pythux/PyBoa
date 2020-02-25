@@ -5,26 +5,27 @@ import functools
 class Dict(dict):
     def __init__(self, d):
         for k, v in d.items():
-            d[k] = dict_to_js_obj(v)
+            d[k] = to_boa(v)
         super().__init__(d)
 
     def __getattribute__(self, name):
+        """get, if exist, ``dict`` data then ``dict`` attribut then ``None`` by ``__getattr__``"""
         if name in dict.keys(self):
             return dict.get(self, name)
         return object.__getattribute__(self, name)
 
     def __getattr__(self, name):
-        return dict.get(self, name)
+        return None
 
     def __setattr__(self, name, value):
-        js = dict_to_js_obj(value)
+        js = to_boa(value)
         dict.update(self, {name: js})
 
     def __getitem__(self, key):
         return dict.get(self, key)
 
     def __setitem__(self, key, value):
-        js = dict_to_js_obj(value)
+        js = to_boa(value)
         dict.update(self, {key: js})
 
     def toPython(self):
@@ -33,7 +34,7 @@ class Dict(dict):
 
 class List(list):
     def __init__(self, li):
-        super().__init__(map(dict_to_js_obj, li))
+        super().__init__(map(to_boa, li))
 
     def map(self, fun):
         return List(map(fun, self))
@@ -67,36 +68,32 @@ class List(list):
         return List(self[:])
 
     def append(self, el):
-        list.append(self, to_js(el))
+        list.append(self, to_boa(el))
 
     def toPython(self):
         return to_py(self)
 
 
-def dict_to_js_obj(data):
+def to_boa(data):
+    """
+        transforme recursively a Python ``dict``, ``list`` into a Boa
+        :param data: insert any Python data
+        :return: the corresponding Boa data
+    """
     if isinstance(data, list) or isinstance(data, tuple):
-        return List(map(dict_to_js_obj, data))
+        return List(map(to_boa, data))
     elif isinstance(data, dict):
         return Dict(data)
     else:
         return data
 
 
-def to_js(data):
-    return dict_to_js_obj(data)
-
-
 def to_py(data):
     if isinstance(data, List):
         return list(map(to_py, data))
     elif isinstance(data, Dict):
-        return to_dict(data)
+        for k in data:
+            data[k] = to_py(data[k])
+        return dict(data)
     else:
         return data
-
-
-def to_dict(js):
-    def reducer(acc, k):
-        acc[k] = to_py(js[k])
-        return acc
-    return functools.reduce(reducer, js, dict())
