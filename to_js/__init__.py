@@ -6,3 +6,6 @@ __author__ = 'Pythux'
 
 # Version synonym
 VERSION = __version__
+
+
+from .to_js_obj import to_js

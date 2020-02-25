@@ -29,8 +29,8 @@ def activate_cmd_publish():
         clean_dirs()
         check_installed_tools()
         build_wheel()
-        upload_wheel()
-        clean_dirs()
+        # upload_wheel()
+        # clean_dirs()
 
         print_git_tag_info()
         sys.exit()
