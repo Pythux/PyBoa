@@ -1,6 +1,6 @@
 from setuptools import setup, find_packages
 from importlib import import_module
-from helper_setup import read_readme, activate_cmd_publish
+from helper_setup import read_readme, activate_cmd_build, activate_cmd_publish
 
 
 #################################################################
@@ -19,6 +19,7 @@ license = 'MIT'
 
 #################################################################
 
+activate_cmd_build()  # can do python setup.py build
 activate_cmd_publish()  # can do python setup.py publish
 __init__ = import_module(find_packages()[0])
 setup(
