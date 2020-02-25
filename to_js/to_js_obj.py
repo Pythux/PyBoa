@@ -1,12 +1,6 @@
 from functools import reduce
 
 
-# first
-def non_recursive_imutable_dict_to_js_obj(d):
-    from collections import namedtuple
-    return namedtuple("JS", d.keys())(*d.values())
-
-
 class Dict(dict):
     def __init__(self, d):
         for k, v in d.items():

@@ -15,6 +15,7 @@ classifiers = [
     "Operating System :: OS Independent",
     'Intended Audience :: Developers',
 ]
+license = 'MIT'
 
 #################################################################
 
@@ -33,6 +34,7 @@ setup(
     classifiers=classifiers,
     install_requires=install_requires,  # external packages as dependencies,
     python_requires='>=3.6',
+    license=license,
 )
 
 # install in dev mode:
