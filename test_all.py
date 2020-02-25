@@ -2,7 +2,7 @@
 from to_js import to_js
 
 
-def test_all():
+def test_dict_to_js():
     d = {'yo': {'da': 4}, 'li': [{'in_li': 4}, 'str'], 'tuple': ({'tu': 4}, 5)}
     js = to_js(d)
     li_1 = [js.yo, js.yo.da, js.li[0].in_li, js.li[1], js.tuple[0].tu, js.tuple[1]]
@@ -40,3 +40,11 @@ def test_all():
     assert js.keys == 2
     js.keys += 4
     assert js['keys'] == 6
+
+
+def test_js_list():
+    js_list = to_js([1, 2, 3])
+    assert js_list.map(lambda x: x+1) == [2, 3, 4]
+    assert js_list == [1, 2, 3]
+
+    assert js_list.reduce(lambda acc, x: acc+x) == 6

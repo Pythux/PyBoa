@@ -27,9 +27,20 @@ class Dict(dict):
         dict.update(self, {key: js})
 
 
+class List(list):
+    def __init__(self, li):
+        super().__init__(map(dict_to_js_obj, li))
+
+    def map(self, fun):
+        return list(map(fun, self))
+
+    def reduce(self, fun):
+        return reduce(fun, self)
+
+
 def dict_to_js_obj(data):
     if isinstance(data, list) or isinstance(data, tuple):
-        return list(map(dict_to_js_obj, data))
+        return List(map(dict_to_js_obj, data))
     elif isinstance(data, dict):
         return Dict(data)
     else:
@@ -41,7 +52,7 @@ def to_js(data):
 
 
 def js_to_py(data):
-    if isinstance(data, list) or isinstance(data, tuple):
+    if isinstance(data, List):
         return list(map(to_dict, data))
     elif isinstance(data, Dict):
         return to_dict(data)
