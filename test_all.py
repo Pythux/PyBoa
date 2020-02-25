@@ -1,4 +1,4 @@
-
+import pytest
 from to_js import to_js
 
 
@@ -43,8 +43,49 @@ def test_dict_to_js():
 
 
 def test_js_list():
-    js_list = to_js([1, 2, 3])
+    li = [1, 2, 3]
+    js_list = to_js(li)
+    assert li == [1, 2, 3]
     assert js_list.map(lambda x: x+1) == [2, 3, 4]
-    assert js_list == [1, 2, 3]
+    assert js_list == li
 
     assert js_list.reduce(lambda acc, x: acc+x) == 6
+
+    js_list_2 = js_list.reverse()
+    assert js_list == li
+    assert js_list_2 == [3, 2, 1]
+
+    assert js_list_2.index(3) == 0
+    assert js_list_2.index(4) is None
+    assert js_list.index(3) == 2
+    assert js_list.index(3, 1, 2) is None
+    assert js_list.index(3, 1, 3) == 2
+    assert js_list.index(3, 1) == 2
+    assert js_list.index(1, 0, 1) == 0
+    assert js_list.index(3, 0, 1) is None
+
+    li_2 = js_list.toPython()
+    assert li == li_2
+    assert hasattr(li, 'map') is False
+    assert hasattr(li_2, 'map') is False
+    assert hasattr(js_list, 'map') is True
+    l1 = to_js([{'a': 2}]).toPython()
+    assert hasattr(l1, 'map') is False
+    with pytest.raises(AttributeError):
+        l1[0].a += 1
+
+
+    assert js_list.filter(lambda x: x >= 2) == [2, 3]
+
+    assert js_list.randomTake() in js_list
+
+    shuffled = js_list.shuffle()
+    assert js_list == li
+    for e in shuffled:
+        assert e in li
+
+    copy = js_list.copy()
+    assert hasattr(copy, 'map') is True
+
+    copy.append({'a': 2})
+    assert copy[-1].a == 2
