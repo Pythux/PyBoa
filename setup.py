@@ -7,7 +7,7 @@ from helper_setup import read_readme, activate_cmd_build, activate_cmd_publish
 
 
 description = 'change python dict and list to act more as javascript objects'
-url = "https://github.com/Pythux/to-js"
+url = "https://github.com/Pythux/PyBoa"
 install_requires = []
 classifiers = [
     "Programming Language :: Python :: 3",
