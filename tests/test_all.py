@@ -157,6 +157,9 @@ def test_import_json_yaml():
     assert yaml.unsafe_load("""a: 2""").a == 2
     assert yaml.full_load("""a: 2""").a == 2
 
+    assert 'stream' in json.loads.__doc__
+    assert 'stream' not in json_lib.loads.__doc__
+
 
 def test_raise_boa():
     d = boa({'a': 2})
