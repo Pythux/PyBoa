@@ -1,9 +1,3 @@
-# PyBoa
-
-Change Python dict and list recursively, making Data Structures where keys can be accessed by attribut.
-Add some usefull functions and an object wraper
-
-```python
 from boa import boa
 
 
@@ -90,5 +84,3 @@ class B:
 b = boa_wrap_obj(B())
 assert b.get_a().d.key == 'value'
 assert b.get_b().get_b().get_a().d.key == 'value'
-
-```
