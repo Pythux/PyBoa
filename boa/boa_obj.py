@@ -5,7 +5,7 @@ import functools
 class Dict(dict):
     def __init__(self, d):
         for k, v in d.items():
-            d[k] = to_boa(v)
+            d[k] = boa(v)
         super().__init__(d)
 
     def __getattribute__(self, name):
@@ -15,12 +15,10 @@ class Dict(dict):
         return super(Dict, self).__getattribute__(name)
 
     def __setattr__(self, name, value):
-        boa = to_boa(value)
-        dict.update(self, {name: boa})
+        dict.update(self, {name: boa(value)})
 
     def __setitem__(self, key, value):
-        boa = to_boa(value)
-        dict.update(self, {key: boa})
+        dict.update(self, {key: boa(value)})
 
     def toPython(self):
         return to_py(self)
@@ -28,7 +26,7 @@ class Dict(dict):
 
 class List(list):
     def __init__(self, li):
-        super().__init__(map(to_boa, li))
+        super().__init__(map(boa, li))
 
     def map(self, fun):
         return List(map(fun, self))
@@ -62,20 +60,27 @@ class List(list):
         return List(self[:])
 
     def append(self, el):
-        list.append(self, to_boa(el))
+        list.append(self, boa(el))
 
     def toPython(self):
         return to_py(self)
 
 
-def to_boa(data):
+def boa(data, raise_exception=True):
     """
         transforme recursively a Python ``dict``, ``list`` into a Boa
         :param data: insert any Python data
         :return: the corresponding Boa data
     """
+    if isinstance(data, List) or isinstance(data, Dict):
+        if raise_exception:
+            raise ValueError("the data given is already Boa data\n" +
+                             "if you don't want to raise an exception, pass raise_exception=False")
+        else:
+            return data
+
     if isinstance(data, list) or isinstance(data, tuple):
-        return List(map(to_boa, data))
+        return List(data)
     elif isinstance(data, dict):
         return Dict(data)
     else:

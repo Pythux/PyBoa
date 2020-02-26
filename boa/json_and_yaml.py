@@ -1,5 +1,5 @@
 from functools import wraps
-from .boa_obj import to_boa
+from .boa_obj import boa
 
 json = None
 yaml = None
@@ -13,14 +13,14 @@ def make_json_load(json_loads):
         """
         if hasattr(stream, 'read'):
             stream = stream.read()
-        return to_boa(json_loads(stream, **kw))
+        return boa(json_loads(stream, **kw))
     return load
 
 
 def yaml_decorate_boa(fun, Loader):
     @wraps(fun)
     def dec(stream):
-        return to_boa(fun(stream, Loader=Loader))
+        return boa(fun(stream, Loader=Loader))
     return dec
 
 
