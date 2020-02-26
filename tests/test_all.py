@@ -170,6 +170,7 @@ def test_raise_boa():
 
 
 class A:
+    """simple doc"""
     x = 2
     d = {'key': 'value'}
 
@@ -182,6 +183,8 @@ def test_boa_wrap_obj():
     assert obj.x == 2
     assert callable(obj.fun)
     assert obj.__class__.__name__ == 'A'
+    assert obj.__class__.__doc__ == 'simple doc'
+    assert obj.__doc__ == 'simple doc'
     assert obj.fun(5) == 5
     assert obj.fun({'a': 4}).a == 4
     assert obj.d.key == 'value'
@@ -192,5 +195,7 @@ def test_boa_wrap_obj():
         obj_2.fun({'b': 2}).b
 
     assert obj_2.d.__class__ == dict
+    assert obj_2.__class__.__doc__ == 'simple doc'
+    assert obj_2.__doc__ == 'simple doc'
     with pytest.raises(AttributeError):
         obj_2.d.key

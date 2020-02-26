@@ -19,7 +19,8 @@ class boa_wrap_obj:
         self.obj = obj
         self.__class__ = type(obj.__class__.__name__,
                               (obj.__class__,),
-                              {'__getattribute__': __getattribute__})
+                              {'__getattribute__': __getattribute__,
+                               '__doc__': obj.__doc__})
 
 
 def __getattribute__(self, name):
