@@ -118,7 +118,6 @@ def test_boa_list():
 
 
 def test_json_and_yaml():
-    assert json is not None  # import json success
     boa_obj = json.loads("""{"a": 4}""")
     assert boa_obj.a == 4
     boa_obj = json.load("""{"b": 6}""")
@@ -141,6 +140,22 @@ def test_json_and_yaml():
         assert boa_obj[1].b == 2
         assert boa_obj[1].d.e == 6
         assert str(boa_obj) == "[{'a': 4}, {'b': 2, 'c': 3, 'd': {'e': 6}}]"
+
+
+def test_import_json_yaml():
+    import json as json_lib
+    import yaml as yaml_lib
+    with pytest.raises(AttributeError):
+        json_lib.loads("""{"a": 4}""").a
+    assert json_lib.loads("""{"a": 4}""")['a'] == 4
+    with pytest.raises(AttributeError):
+        yaml_lib.load("""a: 2""", yaml_lib.SafeLoader).a
+    assert yaml_lib.load("""a: 2""", yaml_lib.SafeLoader)['a'] == 2
+
+    assert yaml.load("""a: 2""").a == 2
+    assert yaml.safe_load("""a: 2""").a == 2  # loader for yaml.load
+    assert yaml.unsafe_load("""a: 2""").a == 2
+    assert yaml.full_load("""a: 2""").a == 2
 
 
 def test_raise_boa():
