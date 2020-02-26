@@ -1,5 +1,5 @@
 import pytest
-from boa import boa, yaml, json
+from boa import boa, yaml, json, boa_wrap_obj
 
 
 def test_boa_obj_dict():
@@ -141,3 +141,38 @@ def test_json_and_yaml():
         assert boa_obj[1].b == 2
         assert boa_obj[1].d.e == 6
         assert str(boa_obj) == "[{'a': 4}, {'b': 2, 'c': 3, 'd': {'e': 6}}]"
+
+
+def test_raise_boa():
+    d = boa({'a': 2})
+    with pytest.raises(ValueError):
+        boa(d)
+
+    assert boa(d, raise_exception=False).__class__.__name__ == 'Dict'
+
+
+class A:
+    x = 2
+    d = {'key': 'value'}
+
+    def fun(self, data):
+        return data
+
+
+def test_boa_wrap_obj():
+    obj = boa_wrap_obj(A())
+    assert obj.x == 2
+    assert callable(obj.fun)
+    assert obj.__class__.__name__ == 'A'
+    assert obj.fun(5) == 5
+    assert obj.fun({'a': 4}).a == 4
+    assert obj.d.key == 'value'
+    assert obj.d.__class__.__name__ == 'Dict'
+
+    obj_2 = A()
+    with pytest.raises(AttributeError):
+        obj_2.fun({'b': 2}).b
+
+    assert obj_2.d.__class__ == dict
+    with pytest.raises(AttributeError):
+        obj_2.d.key
