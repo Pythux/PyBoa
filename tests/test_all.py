@@ -1,5 +1,5 @@
 import pytest
-from boa import boa, yaml, json, boa_wrap_obj
+from boa import boa, yaml, json, BoaWraps
 
 
 def test_boa_obj_dict():
@@ -178,8 +178,8 @@ class A:
         return data
 
 
-def test_boa_wrap_obj():
-    obj = boa_wrap_obj(A())
+def test_BoaWraps():
+    obj = BoaWraps(A())
     assert obj.x == 2
     assert callable(obj.fun)
     assert obj.__class__.__name__ == 'A'

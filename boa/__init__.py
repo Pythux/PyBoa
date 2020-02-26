@@ -8,4 +8,4 @@ __author__ = 'Pythux'
 VERSION = __version__
 
 from .boa_obj import boa
-from .boa_wrap import boa_wrap, boa_wrap_obj
+from .boa_wraps import boa_wraps, BoaWraps

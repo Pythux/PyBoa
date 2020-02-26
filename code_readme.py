@@ -34,8 +34,8 @@ d.keys += 1
 assert list(d.values()) == [3]
 
 
-# now, time for boa_wrap_obj:
-from boa import boa_wrap_obj
+# now, time for BoaWraps:
+from boa import BoaWraps
 
 
 # let have a simple class:
@@ -46,8 +46,8 @@ class A:
     def fun(self, data):
         return data
 
-# if we `boa_wrap_obj` an instance of a class, it will produce boa:
-obj = boa_wrap_obj(A())
+# if we `BoaWraps` an instance of a class, it will produce boa:
+obj = BoaWraps(A())
 
 # keep the class name and all of the class information:
 assert obj.__class__.__name__ == 'A'
@@ -81,6 +81,6 @@ class B:
         return B()
 
 
-b = boa_wrap_obj(B())
+b = BoaWraps(B())
 assert b.get_a().d.key == 'value'
 assert b.get_b().get_b().get_a().d.key == 'value'

@@ -2,19 +2,19 @@ from functools import wraps
 from .boa_obj import boa
 
 
-def boa_wrap(attribut):
+def boa_wraps(attribut):
     if callable(attribut):
         @wraps(attribut)
         def dec(*args, **kwargs):
             res = attribut(*args, **kwargs)
             if type(res).__name__[0].islower():
                 return boa(res)
-            return boa_wrap_obj(res)
+            return BoaWraps(res)
         return dec
     return boa(attribut)
 
 
-class boa_wrap_obj:
+class BoaWraps:
     def __init__(self, obj):
         self.obj = obj
         self.__class__ = type(obj.__class__.__name__,
@@ -24,4 +24,4 @@ class boa_wrap_obj:
 
 
 def __getattribute__(self, name):
-    return boa_wrap(object.__getattribute__(self, name))
+    return boa_wraps(object.__getattribute__(self, name))
