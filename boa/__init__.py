@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 __title__ = 'PyBoa'
-__version__ = '1.0'
+__version__ = '1.0.1'
 __author__ = 'Pythux'
 
 # Version synonym
