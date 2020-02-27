@@ -1,94 +1,205 @@
 # PyBoa
 
-Change Python dict and list recursively, making Data Structures where keys can be accessed by attribut.
-Add some usefull functions and an object wraper
+Subclass of list and dict, recursively, giving attribute access and helper functions
+
+
+## Do what you usually do
+
+``boa`` return a subclass of ``dict`` and ``list``, letting you do everything you use to do
 
 ```python
-from boa import boa
+>>> from boa import boa
+```
 
+```python
+# recursively transforme the data into boa
+>>> a = boa({'b': {'c': [2, 3]}})
 
-# recursively transforme the data into boa:
-a = boa({'b': {'c': 2}})
+# make it accessible by key or attribute
+>>> a['b']['c']
+[2, 3]
+>>> a.b.c
+[2, 3]
+```
 
-# can be accessed by key or attribute:
-assert a.b.c == a['b']['c']
+## everything in [doc: list, dict](https://docs.python.org/3/tutorial/datastructures.html) can still be done
 
-# transforme inserted data into boa too:
-a.x = {'y': {'z': 3}}
-assert a.x.y.z == 3
+### with the exception of overided methodes:
 
-# a.x = {...} and a['x'] = {...} will do the same
-a['li'] = [{'k': 1}]
-assert a.li[0].k == 1
+##### list.reverse
+```py
+>>> li = boa([1, 2])
+>>> li.reverse()
+[2, 1]
+>>> li # no change in the original list
+[1, 2]
 
-# boa list and dict are instance of list, dict:
-assert isinstance(boa([]), list)
-assert isinstance(boa({}), dict)
+# behaviour of list.reverse:
+>>> li.reverse(side_effect=True)
+>>> li
+[2, 1]
+# or use list.reverse directly
+>>> li = boa([1, 2])
+>>> list.reverse(li)
+>>> li
+[2, 1]
+```
 
-# have a .map .reduce in list:
-a = boa({'b': [[1, 2, 3], [1, 2]]})
-assert a.b.map(lambda li: li.reduce(lambda x, y: x + y)) == [6, 3]
+##### list.copy
+```py
+>>> b = boa([1, {'d': 3}])
+>>> c = b.copy()
+>>> b[0] = 100
 
-a['li'] = [{'k': 1}, {'k': 2}]
-assert a.li.map(lambda obj: obj.k) == [1, 2]
+# c is a copy of b, and still a boa object:
+>>> c[0]
+1
+>>> c[1].d
+3
+```
 
+## improvement:
+##### list.index
+```py
+>>> li = boa([1, 2])
+>>> li.index(4)  # same behaviour as the original
+ValueError: 4 is not in list
 
-# can overide dictionary attributes:
-d = boa({})
-d.keys = 2
-d.keys += 1
-assert list(d.values()) == [3]
+>>> li.index(4, raise_exception=False)  # improvement
+None
+```
 
+## transforme inserted data too:
+```py
+>>> a = boa({})
+>>> a.x = {'y': {'z': 3}}
+>>> a.x.y.z
+3
+>>> a.li = []
+>>> a.li.append({'b': 2})
+>>> a.li[0].b
+2
+>>> a['b'] = [{'li': [1, 2]}]
+>>> a.b[0].li.map(lambda x: x+1)
+[2, 3]
+```
 
-# now, time for BoaWraps:
-from boa import BoaWraps
+## Add some usefull functions
+### on list:
+#### .map & .filter
+```python
+>>> li = boa([1, 2])
+>>> li.map(lambda x: x+1)
+[2, 3]
 
+>>> li = boa([x for x in range(10)])
+>>> li.filter(lambda x: 1 < x <= 4)
+[2, 3, 4]
 
-# let have a simple class:
+# .filter & .map return boa list
+>>> li = boa([{'x': x} for x in range(10)])
+>>> li.filter(lambda obj: obj.x < 2).map(lambda obj: obj.x)
+[0, 1]
+```
+
+#### .reduce
+```py
+>>> li = boa([2, 3])
+>>> li.reduce(lambda acc, x: acc*x)
+6
+```
+
+#### random with .shuffle & .randomChoice
+```py
+>>> arr = boa([x for x in range(10)])
+>>> arr.shuffle()
+[3, 1, 5, 8, 6, 2, 0, 7, 9, 4]
+
+>>> arr.randomChoice()
+4
+# ``one of the element at random``
+```
+
+### returning back to normal dict and list:
+```py
+>>> a = boa({'li': [1, 2, {'k': 'v'}]})
+>>> b = a.toPython()
+
+>>> b.li
+AttributeError: 'dict' object has no attribute 'li'
+>>> b['li'].map()
+AttributeError: 'list' object has no attribute 'map'
+>>> b['li'][2].k
+AttributeError: 'dict' object has no attribute 'k'
+```
+
+## Overide attribute:
+```py
+# can overide dictionary attributes, if you really want it:
+>>> d = boa({'items': 1})
+>>> d.keys = 2
+>>> d.values()
+dict_values([1, 2])
+```
+
+## A wraps function
+```py
+>>> from boa import boa_wraps
+>>> def fun(x): return x
+
+>>> @boa_wraps
+>>> def fun(x):
+>>>     return x
+
+>>> fun({'a': 1}).a
+1
+```
+### wraps objet ?
+
+```py
 class A:
     """simple doc"""
     d = {'key': 'value'}
 
     def fun(self, data):
         return data
+```
 
-# if we `BoaWraps` an instance of a class, it will produce boa:
-obj = BoaWraps(A())
+```py
+>>> from boa import BoaWraps
+>>> obj = BoaWraps(A())
+# keep the class name and doc informations:
+>>> obj.__class__.__name__
+'A'
+>>> obj.__doc__
+'simple doc'
+>>> obj.fun({'a': {'b': 4}}).a.b
+4
+>>> obj.d.key
+'value'
 
-# keep the class name and all of the class information:
-assert obj.__class__.__name__ == 'A'
-assert obj.__class__.__doc__ == 'simple doc'
-assert obj.__doc__ == 'simple doc'
+# no side effect on class A:
+>>> obj_2 = A()
+>>> obj_2.fun({'b': 2}).b
+AttributeError: 'dict' object has no attribute 'b'
+>>> obj_2.d.key
+AttributeError: 'dict' object has no attribute 'key'
+```
 
-# the function `fun` return boa:
-assert obj.fun({'a': {'b': 4}}).a.b == 4
-# and the attribute `d` too:
-assert obj.d.key == 'value'
-
-
-# the class A is not modified:
-obj_2 = A()
-
-# no boa here:
-import pytest
-with pytest.raises(AttributeError):
-    obj_2.fun({'b': 2}).b
-
-with pytest.raises(AttributeError):
-    obj_2.d.key
-
-
-# a little more complicated class
+#### to the moon !
+```py
 class B:
     def get_a(self):
         return A()
 
     def get_b(self):
         return B()
+```
 
-
-b = BoaWraps(B())
-assert b.get_a().d.key == 'value'
-assert b.get_b().get_b().get_a().d.key == 'value'
-
+```py
+>>> b = BoaWraps(B())
+>>> b.get_a().d.key
+'value'
+>>> b.get_b().get_b().get_a().d.key
+'value'
 ```
