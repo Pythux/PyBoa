@@ -54,6 +54,13 @@ def test_boa_obj_dict():
     with pytest.raises(AttributeError):
         d.a += 1
 
+    a = boa({'li': [1, 2, {'k': 'v'}]})
+    a.toPython()['li'][2].__class__ == dict
+    assert a.li[2].k == 'v'
+
+    with pytest.raises(AttributeError):
+        a.toPython()['li'][2].k
+
     assert boa_obj.__class__.__name__ == 'Dict'
     assert isinstance(boa_obj, dict)
 
@@ -80,13 +87,18 @@ def test_boa_list():
     assert boa_list_2 == [3, 2, 1]
 
     assert boa_list_2.index(3) == 0
-    assert boa_list_2.index(4) is None
+    assert boa_list_2.index(4, raise_exception=False) is None
+    with pytest.raises(ValueError):
+        boa_list_2.index(4)
+
     assert boa_list.index(3) == 2
-    assert boa_list.index(3, 1, 2) is None
+    assert boa_list.index(3, 1, 2, raise_exception=False) is None
     assert boa_list.index(3, 1, 3) == 2
     assert boa_list.index(3, 1) == 2
     assert boa_list.index(1, 0, 1) == 0
-    assert boa_list.index(3, 0, 1) is None
+    with pytest.raises(ValueError):
+        boa_list.index(3, 0, 1)
+    assert boa_list.index(3, 0, 1, raise_exception=False) is None
 
     li_2 = boa_list.toPython()
     assert li == li_2
@@ -100,7 +112,7 @@ def test_boa_list():
 
     assert boa_list.filter(lambda x: x >= 2) == [2, 3]
 
-    assert boa_list.randomTake() in boa_list
+    assert boa_list.randomChoice() in boa_list
 
     shuffled = boa_list.shuffle()
     assert boa_list == li

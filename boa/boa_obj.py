@@ -26,7 +26,7 @@ class Dict(dict):
 
 class List(list):
     def __init__(self, li):
-        super().__init__(map(boa, li))
+        super().__init__(map(boa_if_not_already, li))
 
     def map(self, fun):
         return List(map(fun, self))
@@ -37,7 +37,7 @@ class List(list):
     def filter(self, fun):
         return List(filter(fun, self))
 
-    def index(self, elem, *args, raise_exception=False):
+    def index(self, elem, *args, raise_exception=True):
         try:
             return super().index(elem, *args)
         except ValueError as e:
@@ -45,7 +45,9 @@ class List(list):
                 raise e
             return None
 
-    def reverse(self):
+    def reverse(self, side_effect=False):
+        if side_effect:
+            return list.reverse(self)
         return List(self[::-1])
 
     def shuffle(self):
@@ -53,7 +55,7 @@ class List(list):
         random.shuffle(li)
         return li
 
-    def randomTake(self):
+    def randomChoice(self):
         return random.choice(self)
 
     def copy(self):
@@ -87,12 +89,14 @@ def boa(data, raise_exception=True):
         return data
 
 
+def boa_if_not_already(data):
+    return boa(data, raise_exception=False)
+
+
 def to_py(data):
     if isinstance(data, List):
         return list(map(to_py, data))
     elif isinstance(data, Dict):
-        for k in data:
-            data[k] = to_py(data[k])
-        return dict(data)
+        return {k: to_py(v) for k, v in data.items()}
     else:
         return data
