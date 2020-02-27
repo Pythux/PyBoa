@@ -26,7 +26,7 @@ class Dict(dict):
 
 class List(list):
     def __init__(self, li):
-        super().__init__(map(boa_if_not_already, li))
+        super().__init__(map(boa, li))
 
     def map(self, fun):
         return List(map(fun, self))
@@ -87,10 +87,6 @@ def boa(data, raise_exception=True):
         return Dict(data)
     else:
         return data
-
-
-def boa_if_not_already(data):
-    return boa(data, raise_exception=False)
 
 
 def to_py(data):
