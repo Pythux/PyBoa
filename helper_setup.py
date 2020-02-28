@@ -55,7 +55,7 @@ def publish():
 
 def check_installed_tools():
     if os.system('pip freeze | grep twine > /dev/null'):
-        print('twine not installed.\nUse `pip install twine`.\nExiting.')
+        print('twine not installed.\n\tUse `pip install twine`')
         sys.exit()
 
 
