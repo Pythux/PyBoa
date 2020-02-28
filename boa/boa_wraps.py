@@ -1,22 +1,28 @@
-import types
 from functools import wraps
 from .boa_obj import boa
+import inspect
 
 
 def boa_wraps(attribut):
-    if isinstance(attribut, types.FunctionType) or attribut.__class__.__name__ == 'method':
-        @wraps(attribut)
-        def dec(*args, **kwargs):
-            res = attribut(*args, **kwargs)
-            if res is None:
-                return None
-            if type(res).__name__[0].islower():
-                return boa(res)
-            return BoaWraps(res)
-        return dec
-    if callable(attribut):  # it's a class
+    if inspect.isclass(attribut):
         return attribut
-    return boa(attribut)
+    if not callable(attribut) and boaisable(attribut):
+        return boa(attribut)
+    if not callable(attribut):
+        return BoaWraps(attribut)
+
+    @wraps(attribut)
+    def dec(*args, **kwargs):
+        return boa_wraps(attribut(*args, **kwargs))
+    return dec
+
+
+def boaisable(data):
+    if data is None:
+        return True
+    if data.__class__.__name__[0].islower():
+        return True
+    return False
 
 
 class BoaWraps:
