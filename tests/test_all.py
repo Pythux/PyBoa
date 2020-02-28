@@ -1,5 +1,5 @@
 import pytest
-from boa import boa, yaml, json, BoaWraps
+from boa import boa, yaml, json
 
 
 def test_boa_obj_dict():
@@ -38,7 +38,8 @@ def test_boa_obj_dict():
     assert boa_obj['a -> $@" toto'] == 2
     boa_obj = boa({'a -> $@" toto': 4, 'a': boa})
     assert boa_obj['a -> $@" toto'] == 4
-    assert boa_obj.a == boa
+    assert boa_obj.a != boa
+    assert boa_obj.a.__name__ == boa.__name__
     boa_obj[' -> &'] = {'a': [{'b': 6}]}
     assert boa_obj[' -> &'].a[0].b == 6
 
@@ -190,8 +191,8 @@ class A:
         return data
 
 
-def test_BoaWraps():
-    obj = BoaWraps(A())
+def test_boa():
+    obj = boa(A())
     assert obj.x == 2
     assert callable(obj.fun)
     assert obj.__class__.__name__ == 'A'
@@ -239,10 +240,10 @@ class C:
 
 
 def test_wraps_obj():
-    b = BoaWraps(B())
+    b = boa(B())
     assert b.get_nothing() is None
 
-    c = BoaWraps(C())
+    c = boa(C())
     assert c.b.__class__ == B
     assert 'get_nothing' in c.b.__dir__()
     assert c.b.__dict__ == {}
@@ -251,3 +252,14 @@ def test_wraps_obj():
     assert c.__dict__ == co.__dict__
     assert c.__dir__ != co.__dir__
     assert c.__dir__() == co.__dir__()
+
+
+def test_following_boa():
+    b = boa({'a': A()})
+    assert b.a.d.key == 'value'
+    assert b.a.fun(A) == A
+    assert b.a.fun(A()).fun({'c': 3}).c == 3
+
+    b.a2 = A()
+    assert b.a2.fun({'c': 3}).c == 3
+    

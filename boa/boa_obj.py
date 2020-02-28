@@ -1,5 +1,7 @@
 import random
 import functools
+import inspect
+from functools import wraps
 
 
 class Dict(dict):
@@ -66,18 +68,41 @@ class List(list):
         return to_py(self)
 
 
-def boa(data, raise_exception=True):
-    """
-        transforme recursively a Python ``dict``, ``list`` into a Boa
-        :param data: insert any Python data
-        :return: the corresponding Boa data
-    """
+def check_raise(data, raise_exception):
     if isinstance(data, List) or isinstance(data, Dict):
         if raise_exception:
             raise ValueError("the data given is already Boa data\n" +
                              "if you don't want to raise an exception, pass raise_exception=False")
         else:
             return data
+
+
+def boa(data, raise_exception=True):
+    if check_raise(data, raise_exception) is not None:
+        return data
+    if inspect.isclass(data):
+        return data
+    if not callable(data):
+        if good_boa(data):
+            return to_boa(data)
+        return boa_wraps_obj(data)
+    return boa_wraps(data)
+
+
+def good_boa(data):
+    if data is None:
+        return True
+    if data.__class__.__name__[0].islower():
+        return True
+    return False
+
+
+def to_boa(data):
+    """
+        transforme recursively a Python ``dict``, ``list`` into a Boa
+        :param data: insert any Python data
+        :return: the corresponding Boa data
+    """
 
     if isinstance(data, list) or isinstance(data, tuple):
         return List(data)
@@ -94,3 +119,21 @@ def to_py(data):
         return {k: to_py(v) for k, v in data.items()}
     else:
         return data
+
+
+def boa_wraps(to_wrap):
+    @wraps(to_wrap)
+    def dec(*args, **kwargs):
+        return boa(to_wrap(*args, **kwargs))
+    return dec
+
+
+def boa_wraps_obj(obj):
+    methods = {
+        '__getattribute__': lambda self, name: boa(getattr(obj, name)),
+        '__doc__': obj.__doc__
+    }
+    Class = type(obj.__class__.__name__,
+                 (obj.__class__,),
+                 methods)
+    return Class()
