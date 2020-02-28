@@ -1,5 +1,9 @@
 # PyBoa
 
+[![Latest Version](https://img.shields.io/pypi/v/PyBoa.svg)](https://pypi.python.org/pypi/PyBoa/)
+[![Supported Python versions](https://img.shields.io/pypi/pyversions/PyBoa.svg)](https://pypi.python.org/pypi/PyBoa/)
+
+
 Subclass of list and dict, recursively, giving attribute access and helper functions
 
 
@@ -120,7 +124,7 @@ None
 # ``one of the element at random``
 ```
 
-### returning back to normal dict and list:
+#### returning back to normal dict and list:
 ```py
 >>> a = boa({'li': [1, 2, {'k': 'v'}]})
 >>> b = a.toPython()
