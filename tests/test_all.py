@@ -262,4 +262,9 @@ def test_following_boa():
 
     b.a2 = A()
     assert b.a2.fun({'c': 3}).c == 3
-    
+
+
+# ToDo
+# def test_class_wraps():
+#     a = boa(A())
+#     assert a.fun(A).fun(A(), {'c': 1}).c
