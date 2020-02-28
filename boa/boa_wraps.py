@@ -7,6 +7,8 @@ def boa_wraps(attribut):
         @wraps(attribut)
         def dec(*args, **kwargs):
             res = attribut(*args, **kwargs)
+            if res is None:
+                return None
             if type(res).__name__[0].islower():
                 return boa(res)
             return BoaWraps(res)

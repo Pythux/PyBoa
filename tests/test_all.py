@@ -214,6 +214,25 @@ def test_BoaWraps():
 
 
 def test_side_effect():
-    d = {'a':{'b':{'c':1}}}
+    d = {'a': {'b': {'c': 1}}}
     boa(d)
-    boa(d)
+    b = boa(d)
+
+    b.toPython()
+    assert b.toPython()['a']['b'].__class__ == dict
+    boa(boa(boa({'a': {'b': {'c': 1}}}).toPython()).toPython()).toPython()
+
+    li = [[[[1], 2], 3], 4]
+    boa(boa(li).toPython())
+    boa(li)
+    boa(li)
+
+
+class B:
+    def get_nothing(self):
+        return None
+
+
+def test_wraps_obj():
+    a = BoaWraps(B())
+    assert a.get_nothing() is None
