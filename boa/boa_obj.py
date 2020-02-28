@@ -2,6 +2,7 @@ import random
 import functools
 import inspect
 from functools import wraps
+from collections import OrderedDict
 
 
 class Dict(dict):
@@ -94,6 +95,8 @@ def good_boa(data):
         return True
     if data.__class__.__name__[0].islower():
         return True
+    if isinstance(data, OrderedDict):
+        return True
     return False
 
 
@@ -130,10 +133,13 @@ def boa_wraps(to_wrap):
 
 def boa_wraps_obj(obj):
     methods = {
+        '__new__': lambda cls: super(obj.__class__, cls).__new__(cls),
+        '__init__': lambda self: None,
         '__getattribute__': lambda self, name: boa(getattr(obj, name)),
         '__doc__': obj.__doc__
     }
     Class = type(obj.__class__.__name__,
                  (obj.__class__,),
                  methods)
+
     return Class()
