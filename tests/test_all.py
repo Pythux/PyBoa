@@ -211,3 +211,9 @@ def test_BoaWraps():
     assert obj_2.__doc__ == 'simple doc'
     with pytest.raises(AttributeError):
         obj_2.d.key
+
+
+def test_side_effect():
+    d = {'a':{'b':{'c':1}}}
+    boa(d)
+    boa(d)

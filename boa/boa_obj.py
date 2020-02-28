@@ -4,9 +4,7 @@ import functools
 
 class Dict(dict):
     def __init__(self, d):
-        for k, v in d.items():
-            d[k] = boa(v)
-        super().__init__(d)
+        super().__init__({k: boa(v) for k, v in d.items()})
 
     def __getattribute__(self, name):
         """get, if exist, ``dict`` data then ``dict`` attribut"""
