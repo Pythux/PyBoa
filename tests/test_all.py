@@ -195,6 +195,7 @@ def test_BoaWraps():
     assert obj.x == 2
     assert callable(obj.fun)
     assert obj.__class__.__name__ == 'A'
+    assert obj.__class__ == A
     assert obj.__class__.__doc__ == 'simple doc'
     assert obj.__doc__ == 'simple doc'
     assert obj.fun(5) == 5
@@ -233,6 +234,20 @@ class B:
         return None
 
 
+class C:
+    b = B()
+
+
 def test_wraps_obj():
-    a = BoaWraps(B())
-    assert a.get_nothing() is None
+    b = BoaWraps(B())
+    assert b.get_nothing() is None
+
+    c = BoaWraps(C())
+    assert c.b.__class__ == B
+    assert 'get_nothing' in c.b.__dir__()
+    assert c.b.__dict__ == {}
+    co = C()
+    assert c.__class__ == co.__class__
+    assert c.__dict__ == co.__dict__
+    assert c.__dir__ != co.__dir__
+    assert c.__dir__() == co.__dir__()
