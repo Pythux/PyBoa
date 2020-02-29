@@ -95,8 +95,6 @@ def good_boa(data):
         return True
     if data.__class__.__name__[0].islower():
         return True
-    if isinstance(data, OrderedDict):
-        return True
     return False
 
 
@@ -135,7 +133,11 @@ def boa_wraps_obj(obj):
     methods = {
         '__new__': lambda cls: super(obj.__class__, cls).__new__(cls),
         '__init__': lambda self: None,
+        '__repr__': obj.__repr__,
+        '__getitem__': lambda self, item: boa(obj.__getitem__(item)),
+        '__eq__': obj.__eq__,
         '__getattribute__': lambda self, name: boa(getattr(obj, name)),
+        # '__getattribute__': gen_getattribute(obj),
         '__doc__': obj.__doc__
     }
     Class = type(obj.__class__.__name__,
@@ -143,3 +145,11 @@ def boa_wraps_obj(obj):
                  methods)
 
     return Class()
+
+
+# def gen_getattribute(obj):
+#     def getattribute(self, name):
+#         if obj.__class__.__name__ == 'Response' and name == 'data':
+#             breakpoint()
+#         return boa(getattr(obj, name))
+#     return getattribute
