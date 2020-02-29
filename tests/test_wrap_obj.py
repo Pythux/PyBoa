@@ -1,3 +1,4 @@
+from collections import OrderedDict
 from boa import boa
 
 
@@ -18,3 +19,14 @@ def test_list_subclass():
     assert li == [1, 2]
     assert li.fun_id({'a': 3}).a == 3
     assert li.fun_id(L([{'a': 2}]))[0].a == 2
+
+
+def test_ordered_dict():
+    od = boa(OrderedDict([('a', 1), ('b', 2)]))
+    assert od.__class__ == OrderedDict
+    assert repr(od) == "OrderedDict([('a', 1), ('b', 2)])" == repr(od)
+
+    assert od.__class__.__repr__(od) == OrderedDict.__repr__(od)
+
+    # fail test:
+    # assert OrderedDict.__repr__(od) == "OrderedDict([('a', 1), ('b', 2)])"

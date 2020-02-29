@@ -133,13 +133,25 @@ def boa_wraps_obj(obj):
     methods = {
         '__new__': lambda cls: super(obj.__class__, cls).__new__(cls),
         '__init__': lambda self: None,
-        '__repr__': obj.__repr__,
         '__getitem__': lambda self, item: boa(obj.__getitem__(item)),
-        '__eq__': obj.__eq__,
-        '__getattribute__': lambda self, name: boa(getattr(obj, name)),
-        # '__getattribute__': gen_getattribute(obj),
+        # '__getattribute__': lambda self, name: boa(getattr(obj, name)),
+        '__getattribute__': gen_getattribute(obj),
         '__doc__': obj.__doc__
     }
+    magic_methods = [
+        '__len__',
+        '__setitem__', '__delitem__',
+        '__repr__',
+        '__call__', '__iter__', '__contains__',
+
+        '__le__', '__lt__', '__eq__', '__ne__', '__gt__', '__ge__',
+        '__and__', '__or__', '__sub__', '__xor__',
+        '__hash__',
+    ]
+    for magic_method in magic_methods:
+        if hasattr(obj, magic_method):
+            methods[magic_method] = getattr(obj, magic_method)
+
     Class = type(obj.__class__.__name__,
                  (obj.__class__,),
                  methods)
@@ -147,9 +159,13 @@ def boa_wraps_obj(obj):
     return Class()
 
 
-# def gen_getattribute(obj):
-#     def getattribute(self, name):
-#         if obj.__class__.__name__ == 'Response' and name == 'data':
-#             breakpoint()
-#         return boa(getattr(obj, name))
-#     return getattribute
+def gen_getattribute(obj):
+    def getattribute(self, name):
+        try:
+            return boa(getattr(obj, name))
+        except AttributeError as e:
+            try:
+                return boa(obj.__getitem__(name))
+            except KeyError:
+                raise e
+    return getattribute
