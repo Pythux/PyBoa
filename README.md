@@ -169,8 +169,7 @@ class A:
 ```
 
 ```py
->>> from boa import BoaWraps
->>> obj = BoaWraps(A())
+>>> obj = boa(A())
 # keep the class name and doc informations:
 >>> obj.__class__.__name__
 'A'
@@ -200,7 +199,7 @@ class B:
 ```
 
 ```py
->>> b = BoaWraps(B())
+>>> b = boa(B())
 >>> b.get_a().d.key
 'value'
 >>> b.get_b().get_b().get_a().d.key
