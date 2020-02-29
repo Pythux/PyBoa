@@ -1,3 +1,4 @@
+import pytest
 from collections import OrderedDict
 from boa import boa
 
@@ -20,6 +21,28 @@ def test_list_subclass():
     assert li == [1, 2]
     assert li.fun_id({'a': 3}).a == 3
     assert li.fun_id(L([{'a': 2}]))[0].a == 2
+
+    assert li.map(lambda x: x+1) == [2, 3]
+
+
+def test_list_subclass_2():
+    li = boa(L([{'a': 1}, {'b': 2}]))
+    assert li.map(lambda d: d) == [{'a': 1}, {'b': 2}]
+    with pytest.raises(AttributeError):
+        li.map(lambda d: d.a)
+
+    li[1] = {'a': 2}
+    assert li == [{'a': 1}, {'a': 2}]
+
+    assert li.map(lambda d: d.a) == [1, 2]
+
+
+def test_ordered_dict_map():
+    od = boa(OrderedDict([('a', 1)]))
+    assert od.a == 1
+
+    li = boa(L([OrderedDict([('a', 1)])]))
+    assert li.map(lambda od: od.a) == [1]
 
 
 def test_ordered_dict():

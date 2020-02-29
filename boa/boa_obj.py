@@ -26,17 +26,19 @@ class Dict(dict):
 
 
 class List(list):
-    def __init__(self, li):
-        super().__init__(map(boa, li))
+    def __init__(self, li, rec=True):
+        if rec:
+            li = map(boa, li)
+        super().__init__(li)
 
     def map(self, fun):
-        return List(map(fun, self))
+        return List(map(fun, self), rec=False)
 
     def reduce(self, fun):
         return functools.reduce(fun, self)
 
     def filter(self, fun):
-        return List(filter(fun, self))
+        return List(filter(fun, self), rec=False)
 
     def index(self, elem, *args, raise_exception=True):
         try:
@@ -49,10 +51,10 @@ class List(list):
     def reverse(self, side_effect=False):
         if side_effect:
             return list.reverse(self)
-        return List(self[::-1])
+        return List(self[::-1], rec=False)
 
     def shuffle(self):
-        li = self[:]
+        li = List(self[:], rec=False)
         random.shuffle(li)
         return li
 
@@ -60,7 +62,7 @@ class List(list):
         return random.choice(self)
 
     def copy(self):
-        return List(self[:])
+        return List(self[:], rec=False)
 
     def append(self, el):
         list.append(self, boa(el))
@@ -164,8 +166,20 @@ def gen_getattribute(obj):
         try:
             return boa(getattr(obj, name))
         except AttributeError as e:
+            if isinstance(obj, list):
+                try:
+                    return attach_obj(getattr(List, name), List(obj))
+                except AttributeError:
+                    pass
             try:
                 return boa(obj.__getitem__(name))
             except KeyError:
                 raise e
     return getattribute
+
+
+def attach_obj(method, obj):
+    @wraps(method)
+    def attach(*args, **kwargs):
+        return method(obj, *args, **kwargs)
+    return attach
