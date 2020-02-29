@@ -149,7 +149,6 @@ dict_values([1, 2])
 ## A wraps function
 ```py
 >>> from boa import boa_wraps
->>> def fun(x): return x
 
 >>> @boa_wraps
 >>> def fun(x):

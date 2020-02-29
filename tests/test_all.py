@@ -230,6 +230,16 @@ def test_side_effect():
     boa(li)
 
 
+def test_wraps_fun():
+    from boa import boa_wraps
+
+    @boa_wraps
+    def fun(x):
+        return x
+
+    assert fun({'a': 1}).a == 1
+
+
 class B:
     def get_nothing(self):
         return None
