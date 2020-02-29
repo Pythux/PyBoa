@@ -15,6 +15,7 @@ def test_list_subclass():
     assert li.__class__ == L
     assert repr(li) == '[1, 2]'
     assert str(li) == 'li([1, 2])'
+    assert hasattr(li, 'fun_id')
     assert li[0] == 1
     assert li == [1, 2]
     assert li.fun_id({'a': 3}).a == 3
