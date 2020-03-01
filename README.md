@@ -11,6 +11,7 @@ Subclass of list and dict, recursively, giving attribute access and helper funct
 
 ``boa`` return a subclass of ``dict`` and ``list``, letting you do everything you use to do
 
+### import boa
 ```python
 >>> from boa import boa
 ```
@@ -148,9 +149,7 @@ dict_values([1, 2])
 
 ## A wraps function
 ```py
->>> from boa import boa_wraps
-
->>> @boa_wraps
+>>> @boa
 >>> def fun(x):
 >>>     return x
 

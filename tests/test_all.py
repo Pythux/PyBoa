@@ -231,13 +231,14 @@ def test_side_effect():
 
 
 def test_wraps_fun():
-    from boa import boa_wraps
-
-    @boa_wraps
+    @boa
     def fun(x):
+        """doc"""
         return x
 
     assert fun({'a': 1}).a == 1
+    assert fun.__doc__ == 'doc'
+    assert fun.__name__ == 'fun'
 
 
 class B:
