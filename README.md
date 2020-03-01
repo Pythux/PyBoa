@@ -7,10 +7,6 @@
 Subclass of list and dict, recursively, giving attribute access and helper functions
 
 
-## Do what you usually do
-
-``boa`` return a subclass of ``dict`` and ``list``, letting you do everything you use to do
-
 ### import boa
 ```python
 >>> from boa import boa
@@ -26,6 +22,13 @@ Subclass of list and dict, recursively, giving attribute access and helper funct
 >>> a.b.c
 [2, 3]
 ```
+
+
+
+## Do what you usually do
+
+``boa`` return a subclass of ``dict`` and ``list``, letting you do everything you use to do
+
 
 ## everything in [doc: list, dict](https://docs.python.org/3/tutorial/datastructures.html) can still be done
 
