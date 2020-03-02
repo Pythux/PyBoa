@@ -144,7 +144,7 @@ def boa_wraps_obj(obj):
         '__len__',
         '__setitem__', '__delitem__',
         '__repr__',
-        '__call__', '__iter__', '__contains__',
+        '__call__', '__contains__',
 
         '__le__', '__lt__', '__eq__', '__ne__', '__gt__', '__ge__',
         '__and__', '__or__', '__sub__', '__xor__',
@@ -154,11 +154,21 @@ def boa_wraps_obj(obj):
         if hasattr(obj, magic_method):
             methods[magic_method] = getattr(obj, magic_method)
 
+    if hasattr(obj, '__iter__'):
+        methods['__iter__'] = gen_iter(obj)
+
     Class = type(obj.__class__.__name__,
                  (obj.__class__,),
                  methods)
 
     return Class()
+
+
+def gen_iter(obj):
+    def it(self):
+        for e in getattr(obj, '__iter__')():
+            yield boa(e)
+    return it
 
 
 def gen_getattribute(obj):

@@ -54,3 +54,11 @@ def test_ordered_dict():
 
     # fail test:
     # assert OrderedDict.__repr__(od) == "OrderedDict([('a', 1), ('b', 2)])"
+
+
+def test_iter():
+    li = boa(L([{'id': 1, 'val': 42}]))
+    {o.id: o.val for o in li}
+
+    li = boa(L([OrderedDict({'id': 1, 'val': 42})]))
+    {o.id: o.val for o in li}
