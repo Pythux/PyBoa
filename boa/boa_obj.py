@@ -2,7 +2,6 @@ import random
 import functools
 import inspect
 from functools import wraps
-from collections import OrderedDict
 
 
 class Dict(dict):
