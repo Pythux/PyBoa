@@ -275,7 +275,16 @@ def test_following_boa():
     assert b.a2.fun({'c': 3}).c == 3
 
 
-# ToDo
+# ToDo: wrap class
 # def test_class_wraps():
 #     a = boa(A())
 #     assert a.fun(A).fun(A(), {'c': 1}).c
+
+
+def test_double_star():
+    d = boa({'a': 2, 'b': 3})
+    d.b += 1
+
+    def fun(a=None, b=None):
+        return a + b
+    assert fun(**d) == 6
