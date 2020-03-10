@@ -70,18 +70,19 @@ class List(list):
         return to_py(self)
 
 
-def check_raise(data, raise_exception):
+# def check_raise(data, raise_exception):
+#     if isinstance(data, List) or isinstance(data, Dict):
+#         if raise_exception:
+#             raise ValueError("the data given is already Boa data\n" +
+#                              "if you don't want to raise an exception, pass raise_exception=False")
+#         else:
+#             return data
+
+
+def boa(data):
     if isinstance(data, List) or isinstance(data, Dict):
-        if raise_exception:
-            raise ValueError("the data given is already Boa data\n" +
-                             "if you don't want to raise an exception, pass raise_exception=False")
-        else:
-            return data
-
-
-def boa(data, raise_exception=True):
-    if check_raise(data, raise_exception) is not None:
         return data
+
     if inspect.isclass(data):
         return data
     if not callable(data):

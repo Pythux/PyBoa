@@ -176,10 +176,7 @@ def test_import_json_yaml():
 
 def test_raise_boa():
     d = boa({'a': 2})
-    with pytest.raises(ValueError):
-        boa(d)
-
-    assert boa(d, raise_exception=False).__class__.__name__ == 'Dict'
+    assert boa(boa(d)).__class__.__name__ == 'Dict'
 
 
 class A:
