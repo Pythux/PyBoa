@@ -149,6 +149,7 @@ def boa_wraps_obj(obj):
         '__le__', '__lt__', '__eq__', '__ne__', '__gt__', '__ge__',
         '__and__', '__or__', '__sub__', '__xor__',
         '__hash__',
+        '__module__',
     ]
     for magic_method in magic_methods:
         if hasattr(obj, magic_method):
