@@ -143,7 +143,7 @@ def boa_wraps_obj(obj):
     magic_methods = [
         '__len__',
         '__setitem__', '__delitem__',
-        '__repr__',
+        '__repr__', '__str__',
         '__call__', '__contains__',
 
         '__le__', '__lt__', '__eq__', '__ne__', '__gt__', '__ge__',
