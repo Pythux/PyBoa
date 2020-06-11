@@ -2,6 +2,7 @@ import random
 import functools
 import inspect
 from functools import wraps
+from enum import Enum
 
 
 class Dict(dict):
@@ -83,6 +84,9 @@ def boa(data):
     if isinstance(data, List) or isinstance(data, Dict):
         return data
 
+    if hasattr(data.__class__, 'refresh_from_db'):
+        return data  # special stop for django ORM
+
     if inspect.isclass(data):
         return data
     if not callable(data):
@@ -132,6 +136,8 @@ def boa_wraps(to_wrap):
 
 
 def boa_wraps_obj(obj):
+    if isinstance(obj, Enum):
+        return obj  # Cannot extend enumerations
     methods = {
         '__new__': lambda cls: super(obj.__class__, cls).__new__(cls),
         '__init__': lambda self: None,
