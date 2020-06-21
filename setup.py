@@ -31,7 +31,7 @@ setup(
     long_description=read_readme(),  # Get the README file, can be .md, .rst, ...
     long_description_content_type="text/markdown",
     url=url,
-    packages=find_packages(),  # same as name, change '⁻' to '_'
+    packages=find_packages(),
     classifiers=classifiers,
     install_requires=install_requires,  # external packages as dependencies,
     python_requires='>=3.6',

@@ -33,7 +33,7 @@ def activate_cmd_publish():
 def activate_cmd_build():
     """
         need to be run in setup.py to take action,
-        if `python setup.py publish`: will build / upload / clean
+        if `python setup.py build`: will build
     """
     if sys.argv[-1] == 'build':
         wheel()
