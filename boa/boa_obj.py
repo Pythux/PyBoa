@@ -89,11 +89,14 @@ def boa(data):
 
     if inspect.isclass(data):
         return data
-    if not callable(data):
-        if good_boa(data):
-            return to_boa(data)
+
+    if not good_boa(data):
         return boa_wraps_obj(data)
-    return boa_wraps(data)
+
+    if callable(data):
+        return boa_wraps(data)
+
+    return to_boa(data)
 
 
 def good_boa(data):
