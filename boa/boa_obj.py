@@ -34,8 +34,8 @@ class List(list):
     def map(self, fun):
         return List(map(fun, self), rec=False)
 
-    def reduce(self, fun):
-        return functools.reduce(fun, self)
+    def reduce(self, fun, *args, **kwargs):
+        return functools.reduce(fun, self, *args, **kwargs)
 
     def filter(self, fun):
         return List(filter(fun, self), rec=False)
