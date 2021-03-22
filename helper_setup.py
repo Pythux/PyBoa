@@ -1,7 +1,7 @@
 """
     some helper function for setup.py file
     use: copy it alongside setup.py and in the setup.py file:
-    from helper_setup import read_readme, activate_cmd_publish
+    from helper_setup import read_readme, activate_cmd_build, activate_cmd_publish
 """
 import sys
 import os
