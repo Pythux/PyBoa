@@ -272,12 +272,6 @@ def test_following_boa():
     assert b.a2.fun({'c': 3}).c == 3
 
 
-# ToDo: wrap class
-# def test_class_wraps():
-#     a = boa(A())
-#     assert a.fun(A).fun(A(), {'c': 1}).c
-
-
 def test_double_star():
     d = boa({'a': 2, 'b': 3})
     d.b += 1
@@ -285,3 +279,18 @@ def test_double_star():
     def fun(a=None, b=None):
         return a + b
     assert fun(**d) == 6
+
+
+def test_sort():
+    liOriginal = [1, 2, 4, 3, 6]
+    liSorted = [1, 2, 3, 4, 6]
+    li = [1, 2, 4, 3, 6]
+    lb = boa(li)
+    assert lb == liOriginal
+    assert lb != liSorted
+    assert lb.sort() == liSorted
+    assert lb != liSorted
+    assert lb.sort(reverse=True) == lb.sort().reverse()
+
+    lk = [{'id': 1}, {'id': 3}, {'id': 2}]
+    boa(lk).sort(key=lambda e: e.id) == [1, 2, 3]

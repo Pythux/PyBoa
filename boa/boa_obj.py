@@ -3,6 +3,7 @@ import functools
 import inspect
 from functools import wraps
 from enum import Enum
+from typing import Any
 
 
 class Dict(dict):
@@ -52,6 +53,21 @@ class List(list):
         if side_effect:
             return list.reverse(self)
         return List(self[::-1], rec=False)
+
+    def sort(self, *, key: Any = None, reverse: bool = False):
+        '''
+            return a sorted new list in ascending order.
+
+            the list itself is not modified,
+            the order of two equal elements is maintained.
+
+            If a key function is given, apply it once to each list item and sort them,
+            ascending or descending, according to their function values.
+            get reversed result with reverse flag.
+        '''
+        li = List(self)
+        list.sort(li, key=key, reverse=reverse)
+        return li
 
     def shuffle(self):
         li = List(self[:], rec=False)
