@@ -48,6 +48,7 @@ def wheel():
 
 def publish():
     wheel()
+    comfirme_publish_version()
     upload_wheel()
     clean_dirs()
     print_git_tag_info()
@@ -62,6 +63,15 @@ def check_installed_tools():
 def build_wheel():
     print('\nbuilding ...')
     os.system('python setup.py bdist_wheel > /dev/null')  # omit sdist, build only the wheel
+
+
+def comfirme_publish_version():
+    __init__ = import_module(find_packages()[0])
+    yesNo = input("do you want to publish version: {} to pypi ? [Y/n]".format(__init__.__version__))
+    if yesNo.lower() in ['', 'y', 'yes']:
+        return
+    else:
+        raise SystemExit()
 
 
 def upload_wheel():
@@ -92,5 +102,5 @@ def clean_dirs():
 def print_git_tag_info():
     __init__ = import_module(find_packages()[0])
     print('\nYou probably want to also tag the version now:')
-    print("  git tag -a v{0} -m 'release {0}'".format(__init__.__version__))
+    print("  git tag -a v{0} -m ''".format(__init__.__version__))  # -m 'release {0}' to add tag message
     print('  git push --tags')
