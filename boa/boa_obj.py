@@ -22,6 +22,20 @@ class Dict(dict):
     def __setitem__(self, key, value):
         dict.update(self, {key: boa(value)})
 
+    # used on map(lambda) to return the dict
+    def update(self, *args, **kwargs):
+        '''overided to return self
+        D.update([E, ]**F) -> D.
+        Update D from dict/iterable E and F.
+        If E is present and has a .keys() method, then does: for k in E: D[k] = E[k]
+        If E is present and lacks a .keys() method, then does: for k, v in E: D[k] = v
+        Else: for k in F: D[k] = F[k]
+        '''
+        args = boa(args)
+        kwargs = boa(kwargs)
+        dict.update(self, *args, **kwargs)
+        return self
+
     def toPython(self):
         return to_py(self)
 
