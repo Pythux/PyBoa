@@ -50,6 +50,7 @@ class List(list):
         return List(map(fun, self), rec=False)
 
     def reduce(self, fun, *args, **kwargs):
+        '''reduce(function(res, el), sequence [, initial]) -> value'''
         return functools.reduce(fun, self, *args, **kwargs)
 
     def filter(self, fun):
