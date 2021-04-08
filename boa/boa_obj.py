@@ -163,12 +163,11 @@ def to_py(data):
 
 
 def boa_wraps(to_wrap):
+    if to_wrap.__name__.startswith('__'):
+        return to_wrap
+
     @wraps(to_wrap)
     def dec(*args, **kwargs):
-        if to_wrap.__name__ == '__repr__':
-            return to_wrap()
-        if to_wrap.__name__ == '__str__':
-            return to_wrap()
         return boa(to_wrap(*args, **kwargs))
     return dec
 
