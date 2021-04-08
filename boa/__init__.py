@@ -7,4 +7,5 @@ __author__ = 'Pythux'
 # Version synonym
 VERSION = __version__
 
-from .boa_obj import boa
+
+from .boa_obj import boa  # noqa
